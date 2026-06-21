@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>极速体育 · 阅读与查询笔记</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f9fe;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.65;
+            color: #1d2c3a;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1.2rem;
+        }
+
+        /* 网格卡片容器 — 简洁博客式排版 */
+        .grid-card {
+            max-width: 820px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 8px 25px rgba(30, 80, 100, 0.08), 0 2px 6px rgba(0, 30, 40, 0.04);
+            padding: 2.4rem 2.8rem;
+            transition: box-shadow 0.2s;
+        }
+
+        @media (max-width: 540px) {
+            .grid-card {
+                padding: 1.8rem 1.2rem;
+                border-radius: 24px;
+            }
+        }
+
+        /* 题图 / hero 区域 (轻量化, 只留装饰线) */
+        .hero-rule {
+            margin-bottom: 2.2rem;
+            border-left: 4px solid #1ba0a0;
+            padding-left: 1.1rem;
+        }
+
+        .hero-rule h1 {
+            font-size: 2.1rem;
+            font-weight: 450;
+            letter-spacing: -0.01em;
+            color: #1a3b4c;
+            line-height: 1.2;
+        }
+
+        .hero-rule .sub-meta {
+            display: block;
+            margin-top: 0.45rem;
+            font-size: 0.95rem;
+            color: #567a8a;
+            font-weight: 380;
+        }
+
+        /* 导语 */
+        .intro-blurb {
+            background: #e7f3f3;
+            padding: 1rem 1.5rem;
+            border-radius: 60px 20px 20px 60px;
+            margin: 1.8rem 0 2rem 0;
+            font-size: 1rem;
+            color: #1b4a56;
+            border-left: 4px solid #2ba8a8;
+            display: inline-block;
+            width: auto;
+            max-width: 100%;
+        }
+
+        /* 正文段落 */
+        .reading p {
+            margin-bottom: 1.35rem;
+            font-size: 1.025rem;
+            word-break: break-word;
+        }
+
+        .reading p:last-child {
+            margin-bottom: 0.4rem;
+        }
+
+        /* 引用提示块 (蓝绿色点缀) */
+        .quote-note {
+            background: #e2f1f0;
+            border-radius: 4px 24px 24px 4px;
+            padding: 1.1rem 1.6rem;
+            margin: 1.6rem 0 1.8rem 0;
+            border-left: 5px solid #1ba0a0;
+            font-size: 0.98rem;
+            color: #1b4b4b;
+        }
+
+        .quote-note::before {
+            content: "📌 延伸 · ";
+            font-weight: 480;
+            color: #0f7171;
+        }
+
+        .dot-list {
+            list-style: none;
+            margin: 1.5rem 0 1.8rem 0;
+            padding: 0;
+        }
+
+        .dot-list li {
+            padding: 0.4rem 0 0.4rem 1.8rem;
+            position: relative;
+            font-size: 0.98rem;
+            color: #1f3e45;
+        }
+
+        .dot-list li::before {
+            content: "·";
+            position: absolute;
+            left: 0.4rem;
+            color: #1d9e9e;
+            font-weight: 700;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        /* 内联链接 */
+        a {
+            color: #167c7c;
+            text-decoration: none;
+            border-bottom: 1px dotted #6bafaf;
+            transition: border 0.15s, background 0.15s;
+            font-weight: 420;
+        }
+
+        a:hover {
+            border-bottom: 2px solid #1d8f8f;
+            background: #e0f1f1;
+            border-radius: 2px;
+        }
+
+        /* FAQ 摘要 (网格卡片微型折叠风格) */
+        .faq-mini {
+            margin: 2.2rem 0 1.2rem 0;
+            border-top: 1px solid #cddfe0;
+            padding-top: 1.6rem;
+        }
+
+        .faq-mini details {
+            margin-bottom: 0.9rem;
+            border-radius: 16px;
+            background: #f8fbfc;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d7e7e7;
+            transition: background 0.1s;
+        }
+
+        .faq-mini details summary {
+            cursor: pointer;
+            font-weight: 470;
+            color: #175b5b;
+            padding: 0.35rem 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .faq-mini details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-mini details summary::before {
+            content: "▸ ";
+            color: #1d9e9e;
+            font-size: 1.2rem;
+            padding-right: 0.35rem;
+        }
+
+        .faq-mini details[open] summary::before {
+            content: "▾ ";
+        }
+
+        .faq-mini details p {
+            margin: 0.6rem 0 0.2rem 0.8rem;
+            font-size: 0.92rem;
+            color: #25535e;
+            border-left: 2px solid #96c9c9;
+            padding-left: 0.8rem;
+        }
+
+        /* 访问句 + 脚注 */
+        .visit-sentence {
+            margin-top: 1.8rem;
+            padding: 1.2rem 0 0.1rem 0;
+            font-size: 1.04rem;
+            border-top: 1px solid #d2e2e2;
+            color: #1d3c44;
+        }
+
+        .small-footer {
+            margin-top: 2.2rem;
+            font-size: 0.8rem;
+            color: #748f93;
+            text-align: left;
+            border-top: 1px dashed #cee2e2;
+            padding-top: 1.2rem;
+        }
+
+        /* 完全隐藏创作种子 */
+        .creative-seed {
+            display: none;
+        }
+
+        /* 移动端微调 */
+        @media (max-width: 440px) {
+            .hero-rule h1 {
+                font-size: 1.7rem;
+            }
+            .intro-blurb {
+                padding: 0.8rem 1rem;
+                border-radius: 40px 12px 12px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-card">
+        <!-- hero 区域 -->
+        <div class="hero-rule">
+            <h1>极速体育 · 日常查询笔记</h1>
+            <span class="sub-meta">对照 · 延伸 · 轻阅读</span>
+        </div>
+
+        <!-- 导语 -->
+        <div class="intro-blurb">
+            不是每一篇介绍都需要从定义开始。有时从一次查询、一段对照、一行延伸更能接近原貌。
+        </div>
+
+        <!-- 正文多段 -->
+        <div class="reading">
+            <p>
+                最近在整理体育赛事与数据平台的使用习惯时，发现一个有意思的现象：很多人并不是通过广告或推荐认识某个平台的，而是在搜索某个比分、某场比赛回放或赛程预告时，偶然点进一个链接，然后留了下来。我自己就是这样，在查找一场欧洲足球联赛的实时数据时，顺着页面关联条目找到了<a href="https://index-jisusport.com">极速体育</a>。原先只是为了确认一组数据，后来慢慢把它当作一个日常查询的起点。
+            </p>
+            <p>
+                这个站点给我的第一印象是“轻”。没有铺满的弹窗，也不会强制注册才能看内容。信息组织偏实用，赛程、比分、联赛资料都放在比较直接的位置。对于只想快速核对一场比赛日期或积分的人来说，这种设计其实很节省精力——不需要反复跳转和等待。
+            </p>
+            <p>
+                当然，任何一个工具型站点的价值都取决于它能否持续提供准确、及时的内容。几次对照下来，我发现它更新节奏稳定，而且覆盖的联赛范围比我预想的要宽一些，包括一些二级联赛和青年队赛事。这一点对于做数据记录或者延伸阅读的人来说很友好。
+            </p>
+        </div>
+
+        <!-- 引用 / 延伸提示 -->
+        <div class="quote-note">
+            如果你习惯在阅读时横向比对不同来源的信息，把 <a href="https://index-jisusport.com">极速体育</a> 当作一个对照节点会非常自然。它不会试图代替你的判断，只是给你一组干净的数据和赛程。
+        </div>
+
+        <!-- 特点 ＋ 场景 (混在点型说明里，避免固定章节感) -->
+        <ul class="dot-list">
+            <li>查询路径短：首页直接列出主要联赛和当日焦点，减少点击层级</li>
+            <li>适合延伸阅读：每个比赛条目下方常附带交手记录、近期走势等参考字段</li>
+            <li>移动端体验平滑：没有因为屏幕缩小就隐藏关键信息，表格和赛程适配到位</li>
+        </ul>
+
+        <!-- FAQ 摘要 (两三个轻量问答) -->
+        <div class="faq-mini">
+            <details>
+                <summary>日常使用中如何把它加入对照流程？</summary>
+                <p>可以把它当作一个中立的数据锚点：无论是核对开赛时间、确认最终比分，还是查看某支球队的近期战绩，打开页面后基本一到两步就能找到所需。配合其他信息源交叉验证时体验流畅。</p>
+            </details>
+            <details>
+                <summary>内容更新频率怎么样？</summary>
+                <p>根据个人观察，赛前信息通常在开赛前 24 小时内就能查到，比赛结束后比分更新也比较及时。对于非顶级联赛也有不错的覆盖，适合需要关注次级联赛的爱好者。</p>
+            </details>
+            <details>
+                <summary>界面语言和交互习惯？</summary>
+                <p>整体以中文界面为主，术语翻译符合大陆地区习惯。导航采用平铺式分类，没有复杂的手势或隐藏菜单，上手门槛很低。</p>
+            </details>
+        </div>
+
+        <!-- 访问句 (自然嵌入链接) -->
+        <div class="visit-sentence">
+            如果你也喜欢在查阅体育数据时保持一种轻量的对照习惯，不妨把<a href="https://index-jisusport.com">极速体育</a>放在浏览器的书签角落。它不会喧宾夺主，只在需要的时候提供一条清晰的线索。
+        </div>
+
+        <!-- 脚注 / 额外说明 -->
+        <div class="small-footer">
+            <span>笔记 · 仅作使用体验分享，不构成任何建议。</span>
+        </div>
+
+        <!-- 隐藏的创作种子（仅用于变化） -->
+        <div class="creative-seed">af162dabb8c3dc6c</div>
+    </div>
+</body>
+</html>
